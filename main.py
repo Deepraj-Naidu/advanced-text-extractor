@@ -1,4 +1,5 @@
 import os
+import streamlit as st
 
 import fitz
 from google import genai
@@ -6,6 +7,12 @@ from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 
 load_dotenv()
+
+# Get API key from Streamlit Secrets or .env
+if "GEMINI_API_KEY" in st.secrets:
+    api_key = st.secrets["GEMINI_API_KEY"]
+else:
+    api_key = os.getenv("GEMINI_API_KEY")
 
 
 class BoundingBoxField(BaseModel):
@@ -36,7 +43,7 @@ class InvoiceModel(BaseModel):
     account_no: AccountNumberField
 
 
-client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
+client = genai.Client(api_key=api_key)
 
 file_in = 'invoice.pdf'
 file_out = 'invoice_annotated.pdf'
